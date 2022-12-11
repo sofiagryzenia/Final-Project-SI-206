@@ -28,6 +28,7 @@ def getSongs():
     soup = BeautifulSoup(soup1.prettify(),'html.parser')
     #prettify to turn Beautiful Soup parse tree into unicode string, w/ a separate line for each tag and each string
     #is this ok, found on internet
+    topSongs =[]
 
 
     #do we just want ranking and song? I added streams and artist bc unsure
@@ -54,6 +55,7 @@ def getSongs():
         streams = streams.replace('\n','')
         streams = streams.strip()
         streams_list.append(streams) 
+    
 
     artist_list = []
     for i in range(2,500,5):
@@ -63,18 +65,13 @@ def getSongs():
         artist = ' '.join(artist.split())
         artist_list.append(artist)
 
-    data = {
-        'Rank' : song_rank,
-        'Song' : song_list,
-        'Streams' : streams_list,
-        'Artist' : artist_list,
-    }
+    topSongs.append((song_rank, song_list, float(streams_list), artist_list))
 
-    return data
+    return topSongs
 
 def setUpSongsTable(data, cur, conn):
     '''This function creates the SongsData Table with the songs pulled from the list of tuples and sorts the data into the respective columns.'''
-    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Name TEXT PRIMARY KEY, Artist_Name TEXT, Number_Of_Streams INTEGER")
+    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Name TEXT PRIMARY KEY, Artist_Name TEXT, Number_Of_Streams FLOAT")
     cur.execute("SELECT * FROM SongsData")
     num = len(cur.fetchall())
     count = 0
@@ -86,3 +83,20 @@ def setUpSongsTable(data, cur, conn):
             num = num + 1
             count = count + 1
     conn.commit()
+
+'''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– MAIN –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
+def main():
+    cur, conn = setUpDatabase('finalprojDB.db')
+    
+
+
+
+    data = getSongs()
+    setUpSongsTable(data, cur, conn)
+
+
+    cur.close()
+
+
+if __name__ == "__main__":
+    main()
