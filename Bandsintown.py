@@ -2,7 +2,7 @@ import json
 import sqlite3
 import os
 import requests
-from bs4 import BeautifulSoup
+
 
 
 
@@ -38,7 +38,7 @@ def create_artists_table(cur,conn):
                     'Maroon 5 featuring Cardi B [B]', 'Lukas Graham', 'Luis Fonsi featuring Daddy Yankee', 'Jason Mraz', 'J. Cole',
                     'DaBaby featuring Roddy Ricch', 'Nirvana', 'Maroon 5']
 
-    cur.execute("DROP TABLE IF EXISTS artist_info")
+
     cur.execute("CREATE TABLE artist_info (id INTEGER PRIMARY KEY, title TEXT)")
     for i in range(len(artist_lst)):
         cur.execute("INSERT INTO artist_info (id,title) VALUES (?,?)",(i,artist_lst[i]))
@@ -86,6 +86,8 @@ def add_info_to_table(cur,conn,data):
     count = 1
     check = 0
     for i in data:
+        cur.execute('SELECT id from artist_info')
+        artists = int(cur.fetchone()[0])
         artist_id = count
         upcoming_events = i[1]
         name = i[0]
@@ -103,7 +105,7 @@ def add_info_to_table(cur,conn,data):
     for elem in data:
         if check == 25:
             break
-        cur.execute('INSERT INTO artist_info (artist_id, name, upcoming_events, venue, location, date_and_time, ticket_url) VALUES (?,?,?,?,?,?,?)', (artist_id, name, upcoming_events, venue, location, date_and_time, ticket_url))
+        cur.execute('INSERT INTO artist_info (id , artists, name, upcoming_events, venue, location, date_and_time, ticket_url) VALUES (?,?,?,?,?,?,?,?)', (artist_id, name, upcoming_events, venue, location, date_and_time, ticket_url))
 
         count += 1
     conn.commit()
