@@ -72,7 +72,7 @@ def setUpSongsTable(data, cur, conn):
 
     '''Funtion to create the SongsData Table with the songs pulled from the list of tuples and sorts the data into the respective columns.'''
 
-    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Name TEXT PRIMARY KEY, Artist_Name TEXT, Number_Of_Streams FLOAT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Rank INTEGER, Song_Name TEXT, Number_Of_Streams_Billions FLOAT)")
     cur.execute("SELECT * FROM SongsData")
     num = len(cur.fetchall())
     count = 0
@@ -80,7 +80,7 @@ def setUpSongsTable(data, cur, conn):
         if count == 25:
             break
         if cur.execute("SELECT Song_Name FROM SongsData WHERE Song_Name = ?", (elem[0],)).fetchone() == None:
-            cur.execute('INSERT INTO SongsData (Song_Name, Artist_Name, Number_Of_Streams) VALUES (?, ?, ?)', (elem[0], elem[1], elem[2]))
+            cur.execute('INSERT INTO SongsData (Song_Rank, Song_Name, Number_Of_Streams_Billions) VALUES (?, ?, ?)', (elem[0], elem[1], elem[2]))
             num = num + 1
             count = count + 1
     conn.commit()
