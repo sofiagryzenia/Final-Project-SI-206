@@ -23,7 +23,7 @@ def spotify():
     token = util.prompt_for_user_token(cid, scope) 
     sp = spotipy.Spotify(auth=token)
     results = sp.current_user_top_tracks(limit=50,offset=0,time_range='medium_term')
-    for  range(50):
+    for album in range(50):
         list = []
         list.append(results)
         with open('top50_data.json', 'w', encoding='utf-8') as f:
