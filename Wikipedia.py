@@ -27,11 +27,10 @@ def getSongs():
     soup1 = BeautifulSoup(page.content, 'html.parser')
     soup = BeautifulSoup(soup1.prettify(),'html.parser')
     #prettify to turn Beautiful Soup parse tree into unicode string, w/ a separate line for each tag and each string
-    #is this ok, found on internet
+  
     topSongs =[]
 
 
-    #do we just want ranking and song? I added streams and artist bc unsure
     song_rank = []
     for i in range (0,100):
         rank = soup.find_all('th', attrs = {'style': 'text-align:center;'})[i].text
@@ -90,7 +89,7 @@ def main():
     
 
 
-
+    '''Calling the getSongss function and setUpSongsTable using Beautiful Soup on Wikipedia.'''
     data = getSongs()
     setUpSongsTable(data, cur, conn)
 
