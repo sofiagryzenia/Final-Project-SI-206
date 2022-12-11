@@ -18,7 +18,12 @@ def setUpDatabase(db_name):
     cur = conn.cursor()
     return cur, conn
 
+'''––––––––––––––––– SONGS BEAUTIFUL SOUP: Pulling data from Wikipedia using Beautiful Soup and putting it into the SongsData table ––––––––––––––––––––'''
+
 def getSongs():
+    #This function pulls data from Wikipedia using Beautiful Soup 
+    #and returns a list of tuples containing top 100 songs, their rank, number of streams, 
+    #and artist.
     URL = 'https://en.wikipedia.org/wiki/List_of_most-streamed_songs_on_Spotify'
 
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
@@ -31,46 +36,44 @@ def getSongs():
     topSongs =[]
 
 
-    song_rank = []
     for i in range (0,100):
         rank = soup.find_all('th', attrs = {'style': 'text-align:center;'})[i].text
         rank = rank.replace('\n','')
         rank = rank.strip()
-        song_rank.append(rank)
 
-    song_list = []
+
     for i in range(0,500,5) :
         song = soup.find_all('td')[i].text
         song = song.replace('\n','')
         song = song.replace('"','')
         song = song.strip()
         song = ' '.join(song.split())
-        song_list.append(song)
 
-
-    streams_list = []
     for i in range(1,500,5) :
         streams = soup.find_all('td')[i].text
         streams = streams.replace('\n','')
         streams = streams.strip()
-        streams_list.append(streams) 
-    
 
-    artist_list = []
+
     for i in range(2,500,5):
         artist = soup.find_all('td')[i].text
         artist = artist.replace('\n','')
         artist = artist.strip()
         artist = ' '.join(artist.split())
-        artist_list.append(artist)
 
-    topSongs.append((song_rank, song_list, float(streams_list), artist_list))
+
+    topSongs.append((rank, song, float(streams), artist))
 
     return topSongs
 
+
+
+
 def setUpSongsTable(data, cur, conn):
-    '''This function creates the SongsData Table with the songs pulled from the list of tuples and sorts the data into the respective columns.'''
-    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Name TEXT PRIMARY KEY, Artist_Name TEXT, Number_Of_Streams FLOAT")
+
+    '''Funtion to create the SongsData Table with the songs pulled from the list of tuples and sorts the data into the respective columns.'''
+
+    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Name TEXT PRIMARY KEY, Artist_Name TEXT, Number_Of_Streams FLOAT)")
     cur.execute("SELECT * FROM SongsData")
     num = len(cur.fetchall())
     count = 0
