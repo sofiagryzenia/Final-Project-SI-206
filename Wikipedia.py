@@ -68,7 +68,6 @@ def getSongs():
 
 
 
-
 def setUpSongsTable(data, cur, conn):
 
     '''Funtion to create the SongsData Table with the songs pulled from the list of tuples and sorts the data into the respective columns.'''
