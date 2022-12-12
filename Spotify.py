@@ -120,7 +120,7 @@ def main():
     
     dir_path = os.path.dirname(os.path.realpath(__file__))
     
-    cur, conn = open_database('spotify.db')
+    cur, conn = open_database('finalprojDB.db')
     l1,l2,l3 = spotify()
     setUpSongsTable(cur,conn,l1,l2,l3)
 
