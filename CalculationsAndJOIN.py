@@ -66,7 +66,6 @@ def calcONE(cur, conn, filepath):
         lat_lst.append(y)
         lon_lst.append(x)
             
-
     with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
         f = csv.writer(f, delimiter = ',')
         f.writerow(['Artist Ranking', 'Aritst Name', 'Upcoming Event Count','Next Event City','Next Event State or Country', 'Latitude', 'Longitude'])
@@ -80,8 +79,10 @@ def calcONE(cur, conn, filepath):
 
 
 def calcTWO(cur, conn, filepath):
+    
     cur.execute('SELECT WikiSongsData.Song_Streams, WikiSongsData.Song_Name, WikiSongsData.Artist_Name FROM WikiSongsData')
     data = cur.fetchall()
+    print(data)
     conn.commit()
 
     streams_lst = []
@@ -96,16 +97,45 @@ def calcTWO(cur, conn, filepath):
     for tup in data: 
         artists_lst.append(tup[2])
     
-    cur.execute('SELECT SpotifySongData.Popularity, SpotifySongData.Song_name, SpotifySongData.Artist FROM SpotifySongData')
-    data = cur.fetchall()
-    conn.commit()
+    #cur.execute('SELECT SpotifySongData.Popularity, SpotifySongData.Song_name, SpotifySongData.Artist FROM SpotifySongData')
+    #data = cur.fetchall()
+    #conn.commit()
 
-    print(data)
+    
 
 
 
 def calcTHREE(cur, conn, filepath):
-    pass
+    
+    cur.execute('SELECT WikiSongsData.Song_Streams, WikiSongsData.Song_Name, WikiSongsData.Artist_Name FROM WikiSongsData')
+    
+    data = cur.fetchall()
+    conn.commit()
+    print(data)
+    streams_lst = []
+    for tup in data: 
+        streams_lst.append(tup[0])
+
+
+    songs_lst = []
+    for tup in data: 
+        songs_lst.append(tup[1])
+    
+    artists_lst = []
+    for tup in data: 
+        artists_lst.append(tup[2])
+    
+    artist_streams_dict = {}
+
+    for artist in artists_lst:
+
+        for stream in streams_lst:
+            if artist not in artist_streams_dict:
+                artist_streams_dict[artist] = stream
+            else:
+                artist_streams_dict[artist] += stream
+
+
 
 
 def main():
@@ -115,9 +145,9 @@ def main():
 
     calcONE(cur, conn, "ArtistNextEvent.csv")
 
-    calcTWO(cur, conn, "SongPopularity")
+    calcTWO(cur, conn, "SongPopularity.csv")
 
-    #calcTHREE(cur, conn, filepath)
+    calcTHREE(cur, conn, "TotalTopStreams.csv")
 
 
 
