@@ -19,7 +19,98 @@ def setUpDatabase(db_name):
 def calcONE(cur, conn, filepath):
 
 
+    cur.execute('SELECT artist_info.id, artist_info.name, artist_info.upcoming_events, artist_info.location FROM artist_info')
+    data = cur.fetchall()
+    conn.commit()
+
+    popularity_lst = []
+    for tup in data: 
+        popularity_lst.append(tup[0])
+
+    artist_lst = []
+    for tup in data: 
+        artist_lst.append(tup[1])
+    
+    upcoming_events_count_lst = []
+    for tup in data: 
+        upcoming_events_count_lst.append(tup[2])
+    
+    
+    loc_lst = []
+    city_lst = []
+    state_and_county_lst = []
+    for tup in data: 
+        loc_lst.append(tup[3])
+            
+    for location in loc_lst:
+        city = location.split(',')[0]
+        final_city = city.replace("['",'')
+        city_lst.append(final_city)
+        
+        state_or_country = location.split(',')[1]
+        state_or_country_final = state_or_country.replace("']",'')
+        final_state_country = state_or_country_final.replace("'","")
+        state_and_county_lst.append(final_state_country)
+
+
+
+    with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
+        f = csv.writer(f, delimiter = ',')
+        f.writerow(['Artist Ranking', 'Aritst Name', 'Upcoming Event Count','Next Event City','Next Event State or Country'])
+        count = 0
+        
+        for i in popularity_lst:
+            write = (popularity_lst[count], artist_lst[count], upcoming_events_count_lst[count],city_lst[count],state_and_county_lst[count])
+            count += 1
+            f.writerow(write)
+    
+
+
+
 def calcTWO(cur, conn, filepath):
+    cur.execute('SELECT WikiSongsData.Song_Streams, WikiSongsData.Song_Name, WikiSongsData.Artist_Name FROM WikiSongsData')
+    data = cur.fetchall()
+    conn.commit()
+
+    streams_lst = []
+    for tup in data: 
+        streams_lst.append(tup[0])
+
+    songs_lst = []
+    for tup in data: 
+        songs_lst.append(tup[1])
+    
+    artists_lst = []
+    for tup in data: 
+        artists_lst.append(tup[2])
+    
+    cur.execute('SELECT SpotifySongData.Popularity, SpotifySongData.Song_name, SpotifySongData.Artist FROM SpotifySongData')
+    data = cur.fetchall()
+    conn.commit()
+
+    print(data)
 
 
-defcalcTHREE(cur, conn, filepath):
+
+def calcTHREE(cur, conn, filepath):
+    pass
+
+
+def main():
+   
+    cur, conn = setUpDatabase('finalprojDB.db')
+    
+
+    calcONE(cur, conn, "ArtistNextEvent.csv")
+
+    calcTWO(cur, conn, "SongPopularity")
+
+    #calcTHREE(cur, conn, filepath)
+
+
+
+    cur.close()
+
+
+if __name__ == "__main__":
+    main()
