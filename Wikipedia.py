@@ -29,58 +29,33 @@ def getSongs():
     headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
     page = requests.get(URL, headers=headers)
 
-    soup1 = BeautifulSoup(page.content, 'html.parser')
-    soup = BeautifulSoup(soup1.prettify(),'html.parser')
-    #prettify to turn Beautiful Soup parse tree into unicode string, w/ a separate line for each tag and each string
-  
-    topSongs =[]
+    soup = BeautifulSoup(page.content, 'html.parser')
 
 
-    for i in range (0,100):
-        rank = soup.find_all('th', attrs = {'style': 'text-align:center;'})[i].text
-        rank = rank.replace('\n','')
-        rank = rank.strip()
-
-
-    for i in range(0,500,5) :
-        song = soup.find_all('td')[i].text
-        song = song.replace('\n','')
-        song = song.replace('"','')
-        song = song.strip()
-        song = ' '.join(song.split())
-
-    for i in range(1,500,5) :
-        streams = soup.find_all('td')[i].text
-        streams = streams.replace('\n','')
-        streams = streams.strip()
-
-
-    for i in range(2,500,5):
-        artist = soup.find_all('td')[i].text
-        artist = artist.replace('\n','')
-        artist = artist.strip()
-        artist = ' '.join(artist.split())
-
-
-    topSongs.append((rank, song, float(streams), artist))
+    topSongs = []
+    table = soup.find_all('tbody')[0]
+    for row in table.find_all("tr")[1:-1]:
+        rank = row.find('th').text
+        song = row.find_all('td')[0].text
+        artist = row.find_all('td')[2].text
+        topSongs.append((int(rank), song, artist))
 
     return topSongs
 
 
-
 def setUpSongsTable(data, cur, conn):
 
-    '''Funtion to create the SongsData Table with the songs pulled from the list of tuples and sorts the data into the respective columns.'''
+    '''Funtion to create the WikiSongsData Table with the songs pulled from the list of tuples and sorts the data into columns.'''
 
-    cur.execute("CREATE TABLE IF NOT EXISTS SongsData (Song_Rank INTEGER, Song_Name TEXT, Number_Of_Streams_Billions FLOAT)")
-    cur.execute("SELECT * FROM SongsData")
+    cur.execute("CREATE TABLE IF NOT EXISTS WikiSongsData (Song_Rank INTEGER, Song_Name TEXT, Artist_Name TEXT)")
+    cur.execute("SELECT * FROM WikiSongsData")
     num = len(cur.fetchall())
     count = 0
     for elem in data:
         if count == 25:
             break
-        if cur.execute("SELECT Song_Name FROM SongsData WHERE Song_Name = ?", (elem[0],)).fetchone() == None:
-            cur.execute('INSERT INTO SongsData (Song_Rank, Song_Name, Number_Of_Streams_Billions) VALUES (?, ?, ?)', (elem[0], elem[1], elem[2]))
+        if cur.execute("SELECT Song_Name FROM WikiSongsData WHERE Song_Name = ?", (elem[1],)).fetchone() == None:#Not properly checking if item in DB
+            cur.execute('INSERT INTO WikiSongsData (Song_Rank, Song_Name, Artist_Name) VALUES (?, ?, ?)', (elem[0], elem[1], elem[2]))
             num = num + 1
             count = count + 1
     conn.commit()
@@ -91,7 +66,7 @@ def main():
     
 
 
-    '''Calling the getSongss function and setUpSongsTable using Beautiful Soup on Wikipedia.'''
+    '''Calling the getSongs function and setUpSongsTable using Beautiful Soup on Wikipedia.'''
     data = getSongs()
     setUpSongsTable(data, cur, conn)
 
