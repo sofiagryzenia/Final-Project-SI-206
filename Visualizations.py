@@ -1,23 +1,11 @@
 import os
 import sqlite3
 import csv
-import geopandas
-from geopandas import GeoDataFrame
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import plotly.express as px
 import geopandas as gpd
-
-import warnings
-
-warnings.filterwarnings('ignore')
-
-
-geopandas.datasets.available
-
-from  geopy.geocoders import Nominatim
-geolocator = Nominatim(user_agent="Sofia")
 
 
 def setUpDatabase(db_name):
