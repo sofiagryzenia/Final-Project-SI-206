@@ -53,7 +53,7 @@ def setUpSongsTable(data, cur, conn):
     num = len(cur.fetchall())
     count = 0
     for elem in data:
-        if count == 25:
+        if count == 25: #to limit 25
             break
         if cur.execute("SELECT Song_Name FROM WikiSongsData WHERE Song_Name = ?", (elem[1],)).fetchone() == None:#Not properly checking if item in DB
             cur.execute('INSERT INTO WikiSongsData (Song_Rank, Song_Streams, Song_Name, Artist_Name) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
