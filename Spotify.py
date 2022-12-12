@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 def spotify():
     cid = "3641e3928ecd4cf48421e3cf84cd31dc"
     secret = "b16fb2fa6c7143daa22a8fc1c8c918f2"
+
     
     os.environ['SPOTIPY_CLIENT_ID']= cid
     os.environ['SPOTIPY_CLIENT_SECRET']= secret
