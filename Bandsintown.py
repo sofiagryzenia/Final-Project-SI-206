@@ -8,89 +8,96 @@ import requests
 
 api_key = "222bf1b67a2801b6221b4cd60ca682a5"
 
+artist_lst = ['Ed Sheeran', 'The Weeknd', 'Tones And I', 'Lewis Capaldi', 'Post Malone', 'Camila Cabello',
+    'Drake', 'The Chainsmokers', 'Imagine Dragons', 'Shawn Mendes',
+    'The Kid Laroi', 'Ed Sheeran', 'James Arthur', 'Billie Eilish', 'Glass Animals', 'Ed Sheeran',
+    'Juice WRLD', 'Dua Lipa', 'The Weeknd', 'Drake', 'Billie Eilish', 'Harry Styles',
+        'Ed Sheeran', 'Queen', 'The Chainsmokers', 'Lady Gaga', 'XXXTentacion', 'Justin Bieber',
+        'Post Malone', 'John Legend', 'Hozier', 'Imagine Dragons', 'The Neighbourhood', 'Ariana Grande', 'Travis Scott',
+        'XXXTentacion', 'Camila Cabello', 'Lil Uzi Vert', 'Twenty One Pilots', 'Dua Lipa', 'Marshmello',
+        'Kendrick Lamar', 'OneRepublic', 'Travis Scott', 'Passenger', 'Avicii', 'Vance Joy', 'Justin Bieber',
+            'The Weeknd', 'Major Lazer', 'DJ Snake', 'Saint Jhn',
+            'Macklemore', 'Olivia Rodrigo', 'Post Malone', 'Calvin Harris',
+            'Post Malone', 'Alan Walker', 'Shawn Mendes', 'Olivia Rodrigo', 'Sam Smith', 'Harry Styles',
+            'The Chainsmokers', 'Halsey', 'Mike Posner', 'Mark Ronson featuring Bruno Mars',
+                'Ed Sheeran', 'Maroon 5', 'Ariana Grande', 'Sam Smith', 'The Killers', 'Lil Nas X',
+                'Imagine Dragons', 'Eminem', 'Luis Fonsi', '24kGoldn',
+                'Dua Lipa', 'Lil Nas X', 'Bad Bunny', 'French Montana',
+                'XXXTentacion', 'Roddy Ricch', 'BTS', 'Oasis', 'Arctic Monkeys', 'Bruno Mars', 'Sia',
+                    'Shawn Mendes', 'Eminem', 'Shawn Mendes', 'Wiz Khalifa', 'Lauv',
+                    'Maroon 5', 'Lukas Graham', 'Luis Fonsi', 'Jason Mraz', 'J. Cole',
+                    'DaBaby', 'Nirvana', 'Maroon 5']
+
 
 def setUpDatabase(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
- 
-def create_artists_table(cur,conn):
 
-
-    artist_lst = ['Ed Sheeran', 'The Weeknd', 'Tones And I', 'Lewis Capaldi', 'Post Malone featuring 21 Savage', 'Post Malone and Swae Lee',
-    'Drake featuring Wizkid and Kyla', 'The Chainsmokers featuring Halsey', 'Imagine Dragons', 'Shawn Mendes and Camila Cabello',
-    'The Kid Laroi and Justin Bieber', 'Ed Sheeran', 'James Arthur', 'Billie Eilish', 'Glass Animals', 'Ed Sheeran',
-    'Juice WRLD', 'Dua Lipa', 'The Weeknd featuring Daft Punk', 'Drake', 'Billie Eilish and Khalid', 'Harry Styles',
-        'Ed Sheeran', 'Queen', 'The Chainsmokers and Coldplay', 'Lady Gaga and Bradley Cooper', 'XXXTentacion', 'Justin Bieber',
-        'Post Malone', 'John Legend', 'Hozier', 'Imagine Dragons', 'The Neighbourhood', 'Ariana Grande', 'Travis Scott featuring Kendrick Lamar',
-        'XXXTentacion', 'Camila Cabello featuring Young Thug', 'Lil Uzi Vert', 'Twenty One Pilots', 'Dua Lipa', 'Marshmello and Bastille',
-        'Kendrick Lamar', 'OneRepublic', 'Travis Scott featuring Drake', 'Passenger', 'Avicii', 'Vance Joy', 'Justin Bieber',
-            'The Weeknd', 'Major Lazer and DJ Snake featuring MØ', 'DJ Snake featuring Justin Bieber', 'Saint Jhn with Imanbek',
-            'Macklemore & Ryan Lewis featuring Ray Dalton', 'Olivia Rodrigo', 'Post Malone', 'Calvin Harris and Dua Lipa',
-            'Post Malone featuring Quavo', 'Alan Walker', 'Shawn Mendes', 'Olivia Rodrigo', 'Sam Smith', 'Harry Styles',
-            'The Chainsmokers featuring Daya', 'Halsey', 'Mike Posner and Seeb', 'Mark Ronson featuring Bruno Mars',
-                'Ed Sheeran and Justin Bieber', 'Maroon 5', 'Ariana Grande', 'Sam Smith', 'The Killers', 'Lil Nas X featuring Jack Harlow',
-                'Imagine Dragons', 'Eminem', 'Luis Fonsi and Daddy Yankee featuring Justin Bieber', '24kGoldn and Iann Dior',
-                'Dua Lipa featuring DaBaby', 'Lil Nas X', 'Bad Bunny and Jhay Cortez', 'French Montana featuring Swae Lee',
-                'XXXTentacion', 'Roddy Ricch', 'BTS', 'Oasis', 'Arctic Monkeys', 'Bruno Mars', 'Sia featuring Sean Paul',
-                    'Shawn Mendes', 'Eminem featuring Nate Dogg', 'Shawn Mendes', 'Wiz Khalifa featuring Charlie Puth', 'Lauv',
-                    'Maroon 5 featuring Cardi B [B]', 'Lukas Graham', 'Luis Fonsi featuring Daddy Yankee', 'Jason Mraz', 'J. Cole',
-                    'DaBaby featuring Roddy Ricch', 'Nirvana', 'Maroon 5']
-
-
-    cur.execute("CREATE TABLE artist_info (id INTEGER PRIMARY KEY, title TEXT)")
-    for i in range(len(artist_lst)):
-        cur.execute("INSERT INTO artist_info (id,title) VALUES (?,?)",(i,artist_lst[i]))
-    conn.commit()
 
 
 
 def get_events_info(artist_lst):
      
-     for name in artist_lst:
-        if " " in name:
-            name = name.replace(" ", "%20")
 
-        url = f"https://rest.bandsintown.com/artists/{name}/events?app_id={api_key}&date=2022-12-13,2023-12-9"
+
+    for i in range(len(artist_lst)):
+ 
+        if " " in artist_lst[i]:
+            artist_lst[i] = artist_lst[i].replace(" ", "%20")
+
+        url = f"https://rest.bandsintown.com/artists/{artist_lst[i]}/events?app_id={api_key}&date=2022-12-13,2023-12-9"
         r = requests.get(url)
         js = json.loads(r.text)
-        upcoming_event_count = len(js)
-        data = []
-        
-        index = 0
-        name = name.replace("%20", " ")
 
-        if js != []:
         
-            #try:
+        upcoming_event_count = len(js)
+        
+        data = []
+ 
+        artist_lst[i] = artist_lst[i].replace("%20", " ")
+
+        location_lst = []
+        #print(js)
+        if js != []:
             for elem in js:
 
                 location = elem["venue"]["location"]
+                location_lst.append(location)
                 venue = elem["venue"]["name"]
                 date_and_time = elem["starts_at"]
-                #upcoming_event_count = elem["artist"]["upcoming_event_count"]
-                #name = elem["name"]
-                ticket_url = elem["offers"][0]["url"]
+                ticket_url = elem["offers"]
+                for offer in ticket_url:
+                    url = offer["url"]
 
-                data.append((name,upcoming_event_count,venue,location,date_and_time,ticket_url))
-                
+                data.append((artist_lst[i],upcoming_event_count,venue,location,date_and_time,ticket_url))
+  
+        if data:
+            #print(data[0])
+            return data[0]
+    
 
-            #except:
-                #print("exception")
-        #print(data)
-        return data
 
-def add_info_to_table(cur,conn,data):
+    
+def create_artists_table(cur,conn,data,artist_lst):
+
+
+
+
+    cur.execute("CREATE TABLE IF NOT EXISTS artist_info (id INTEGER PRIMARY KEY, name TEXT, upcoming_events INTEGER, venue TEXT, location TEXT, date_and_time TEXT, ticket_url TEXT)")
+  
+    conn.commit()
     
     count = 1
     check = 0
-    for i in data:
-        cur.execute('SELECT id from artist_info')
-        artists = int(cur.fetchone()[0])
+
+    for i in range(len(data)):
+
         artist_id = count
-        upcoming_events = i[1]
-        name = i[0]
+        upcoming_events = data[1]
+        print(upcoming_events)
+        name = data[0]
         if upcoming_events > 0:
             venue = data[2]
             location = data[3]
@@ -105,41 +112,43 @@ def add_info_to_table(cur,conn,data):
     for elem in data:
         if check == 25:
             break
-        cur.execute('INSERT INTO artist_info (id , artists, name, upcoming_events, venue, location, date_and_time, ticket_url) VALUES (?,?,?,?,?,?,?,?)', (artist_id, name, upcoming_events, venue, location, date_and_time, ticket_url))
+        for i in range(len(artist_lst)):
+
+            cur.execute('INSERT OR IGNORE INTO artist_info (id, name, upcoming_events, venue, location, date_and_time, ticket_url) VALUES (?,?,?,?,?,?,?)', (int(count), str(artist_lst[i]), int(upcoming_events), str(venue), str(location), str(date_and_time), str(ticket_url)))
 
         count += 1
     conn.commit()
 
 def main():
     
-    artist_lst = ['Ed Sheeran', 'The Weeknd', 'Tones And I', 'Lewis Capaldi', 'Post Malone featuring 21 Savage', 'Post Malone and Swae Lee',
-    'Drake featuring Wizkid and Kyla', 'The Chainsmokers featuring Halsey', 'Imagine Dragons', 'Shawn Mendes and Camila Cabello',
-    'The Kid Laroi and Justin Bieber', 'Ed Sheeran', 'James Arthur', 'Billie Eilish', 'Glass Animals', 'Ed Sheeran',
-    'Juice WRLD', 'Dua Lipa', 'The Weeknd featuring Daft Punk', 'Drake', 'Billie Eilish and Khalid', 'Harry Styles',
-        'Ed Sheeran', 'Queen', 'The Chainsmokers and Coldplay', 'Lady Gaga and Bradley Cooper', 'XXXTentacion', 'Justin Bieber',
-        'Post Malone', 'John Legend', 'Hozier', 'Imagine Dragons', 'The Neighbourhood', 'Ariana Grande', 'Travis Scott featuring Kendrick Lamar',
-        'XXXTentacion', 'Camila Cabello featuring Young Thug', 'Lil Uzi Vert', 'Twenty One Pilots', 'Dua Lipa', 'Marshmello and Bastille',
-        'Kendrick Lamar', 'OneRepublic', 'Travis Scott featuring Drake', 'Passenger', 'Avicii', 'Vance Joy', 'Justin Bieber',
-            'The Weeknd', 'Major Lazer and DJ Snake featuring MØ', 'DJ Snake featuring Justin Bieber', 'Saint Jhn with Imanbek',
-            'Macklemore & Ryan Lewis featuring Ray Dalton', 'Olivia Rodrigo', 'Post Malone', 'Calvin Harris and Dua Lipa',
-            'Post Malone featuring Quavo', 'Alan Walker', 'Shawn Mendes', 'Olivia Rodrigo', 'Sam Smith', 'Harry Styles',
-            'The Chainsmokers featuring Daya', 'Halsey', 'Mike Posner and Seeb', 'Mark Ronson featuring Bruno Mars',
-                'Ed Sheeran and Justin Bieber', 'Maroon 5', 'Ariana Grande', 'Sam Smith', 'The Killers', 'Lil Nas X featuring Jack Harlow',
-                'Imagine Dragons', 'Eminem', 'Luis Fonsi and Daddy Yankee featuring Justin Bieber', '24kGoldn and Iann Dior',
-                'Dua Lipa featuring DaBaby', 'Lil Nas X', 'Bad Bunny and Jhay Cortez', 'French Montana featuring Swae Lee',
-                'XXXTentacion', 'Roddy Ricch', 'BTS', 'Oasis', 'Arctic Monkeys', 'Bruno Mars', 'Sia featuring Sean Paul',
-                    'Shawn Mendes', 'Eminem featuring Nate Dogg', 'Shawn Mendes', 'Wiz Khalifa featuring Charlie Puth', 'Lauv',
-                    'Maroon 5 featuring Cardi B [B]', 'Lukas Graham', 'Luis Fonsi featuring Daddy Yankee', 'Jason Mraz', 'J. Cole',
-                    'DaBaby featuring Roddy Ricch', 'Nirvana', 'Maroon 5']
+    artist_lst = ['Ed Sheeran', 'The Weeknd', 'Tones And I', 'Lewis Capaldi', 'Post Malone', 'Camila Cabello',
+    'Drake', 'The Chainsmokers', 'Imagine Dragons', 'Shawn Mendes',
+    'The Kid Laroi', 'Ed Sheeran', 'James Arthur', 'Billie Eilish', 'Glass Animals', 'Ed Sheeran',
+    'Juice WRLD', 'Dua Lipa', 'The Weeknd', 'Drake', 'Billie Eilish', 'Harry Styles',
+        'Ed Sheeran', 'Queen', 'The Chainsmokers', 'Lady Gaga', 'XXXTentacion', 'Justin Bieber',
+        'Post Malone', 'John Legend', 'Hozier', 'Imagine Dragons', 'The Neighbourhood', 'Ariana Grande', 'Travis Scott',
+        'XXXTentacion', 'Camila Cabello', 'Lil Uzi Vert', 'Twenty One Pilots', 'Dua Lipa', 'Marshmello',
+        'Kendrick Lamar', 'OneRepublic', 'Travis Scott', 'Passenger', 'Avicii', 'Vance Joy', 'Justin Bieber',
+            'The Weeknd', 'Major Lazer', 'DJ Snake', 'Saint Jhn',
+            'Macklemore', 'Olivia Rodrigo', 'Post Malone', 'Calvin Harris',
+            'Post Malone', 'Alan Walker', 'Shawn Mendes', 'Olivia Rodrigo', 'Sam Smith', 'Harry Styles',
+            'The Chainsmokers', 'Halsey', 'Mike Posner', 'Mark Ronson featuring Bruno Mars',
+                'Ed Sheeran', 'Maroon 5', 'Ariana Grande', 'Sam Smith', 'The Killers', 'Lil Nas X',
+                'Imagine Dragons', 'Eminem', 'Luis Fonsi', '24kGoldn',
+                'Dua Lipa', 'Lil Nas X', 'Bad Bunny', 'French Montana',
+                'XXXTentacion', 'Roddy Ricch', 'BTS', 'Oasis', 'Arctic Monkeys', 'Bruno Mars', 'Sia',
+                    'Shawn Mendes', 'Eminem', 'Shawn Mendes', 'Wiz Khalifa', 'Lauv',
+                    'Maroon 5', 'Lukas Graham', 'Luis Fonsi', 'Jason Mraz', 'J. Cole',
+                    'DaBaby', 'Nirvana', 'Maroon 5'] # and Coldplay,  and Bradley Cooper featuring Kendrick Lamar  featuring Young Thug featuring DaBaby, jack harlow, cardi b, roddy richh, and Bastille
 
     
     cur, conn = setUpDatabase('finalprojDB.db')
 
-
-
     data = get_events_info(artist_lst)
 
-    add_info_to_table(cur,conn,data)
+    create_artists_table(cur,conn,data,artist_lst)
+    cur.close()
+
  
 
     
