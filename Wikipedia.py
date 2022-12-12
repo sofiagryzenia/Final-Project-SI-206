@@ -41,7 +41,7 @@ def getSongs():
         artist = row.find_all('td')[2].text
         topSongs.append((int(rank), float(streams), song, artist))
 
-    print(topSongs)
+    return topSongs
 
 
 def setUpSongsTable(data, cur, conn):
