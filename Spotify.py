@@ -26,23 +26,35 @@ def spotify():
 
     playlists = sp.user_playlists('spotify')
 
-    results = sp.current_user_top_tracks(limit = 10, offset = 0, time_range = 'medium_term' )
+    results = sp.current_user_top_tracks(limit = 100, offset = 0, time_range = 'medium_term' )
     items = results["items"]
     #print(len(items))
     popularity = []
     names = []
+    artists = []
+
     for item in items:
         popularity.append(item["popularity"])
         names.append(item["name"])
-        #for key in item:
-            #print (key, item[key])
+        artists.append(item['artists'][0]['name'])
+
+
+    
+
+        for key in item:
+            print (key, item[key])
+
 
        # print (item, results[item])
-        #print("==================================================================")
+            print("==================================================================")
 
 
     print (popularity)
     print (names)
+    print (artists)
+    return popularity,names,artists
+
+  
 
     #fig, ax = plt.subplots()
 
@@ -60,14 +72,14 @@ def spotify():
 
     #plt.show() 
 
-    y_axis = names
-    x_axis = popularity
+    #y_axis = names
+    #x_axis = popularity
 
-    plt.barh(y_axis, x_axis)
-    plt.title('title name')
-    plt.ylabel('y axis name')
-    plt.xlabel('x axis name')
-    plt.show()
+    #plt.barh(y_axis, x_axis)
+    #plt.title('title name')
+    #plt.ylabel('y axis name')
+    #plt.xlabel('x axis name')
+    #plt.show()
 
     
 
@@ -87,7 +99,16 @@ def open_database(db_name):
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
     return cur, conn
+
+
+def setUpSongsTable(cur, conn,l1,l2,l3):
+    cur.execute("CREATE TABLE IF NOT EXISTS SpotifySongData (Popularity, Song_Name, artist)")
+    cur.execute("SELECT * FROM SpotifySongData")
+    for i in range(0,25):
+        cur.execute('INSERT INTO SpotifySongData (Popularity, Song_name, artist) VALUES (?, ?, ?)', (l1[i], l2[i], l3[i]))
+    conn.commit()
     
+
 
 
 
@@ -99,7 +120,8 @@ def main():
     dir_path = os.path.dirname(os.path.realpath(__file__))
     
     cur, conn = open_database('spotify.db')
-    spotify()
+    l1,l2,l3 = spotify()
+    setUpSongsTable(cur,conn,l1,l1,l3)
 
     
     
