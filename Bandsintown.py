@@ -3,14 +3,13 @@ import sqlite3
 import os
 import requests
 from bs4 import BeautifulSoup
-import requests
+
 
 api_key = "222bf1b67a2801b6221b4cd60ca682a5"
 
 
 def get_artist_lst():
-    '''This function uses BeautifulSoup to retrieve the list of the top 100 global artists by digital streams.'''
-
+    
     url = 'https://kworb.net/itunes/'
 
     artist_lst = []
@@ -26,10 +25,9 @@ def get_artist_lst():
     return artist_lst
 
 
-'''––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– DB: Function to set up a database –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
+
 
 def setUpDatabase(db_name):
-    '''This function will create a database named after the string input into the function.'''
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
@@ -39,9 +37,7 @@ def setUpDatabase(db_name):
 
 
 def get_events_info(artist_lst):
-    '''This function retrieves information from artist_lst and extracts the number of upcoming events, 
-    the location and venue of the events, the dates and times of the events, and the URL to purchase 
-    tickets for the events for each artist.'''
+    
     global data
     data = []
     for i in range(len(artist_lst)):
@@ -88,9 +84,10 @@ def get_events_info(artist_lst):
             return data
     
 
+
     
 def create_artists_table(cur,conn,data,artist_lst):
-    '''Funtion to create the artist_info table with the artists pulled from the list of tuples and sorts the data into columns.'''
+
    
     #print(data)
 
@@ -130,9 +127,9 @@ def create_artists_table(cur,conn,data,artist_lst):
         count += 1
     conn.commit()
 
-'''–––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– MAIN –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
+
 def main():
-    '''The main function calls the function to set up the database and sets up the artist_info table.'''
+    
     artist_lst = get_artist_lst()
 
     
@@ -151,3 +148,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
