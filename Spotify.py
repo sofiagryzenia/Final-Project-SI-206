@@ -108,7 +108,7 @@ def setUpSongsTable(cur, conn,l1,l2,l3):
     for i in range(0,25):
         cur.execute('INSERT INTO SpotifySongData (Popularity, Song_name, artist) VALUES (?, ?, ?)', (l1[i], l2[i], l3[i]))
     conn.commit()
-    
+
 
 
 
@@ -122,7 +122,7 @@ def main():
     
     cur, conn = open_database('spotify.db')
     l1,l2,l3 = spotify()
-    setUpSongsTable(cur,conn,l1,l1,l3)
+    setUpSongsTable(cur,conn,l1,l2,l3)
 
     
     
