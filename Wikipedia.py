@@ -36,18 +36,19 @@ def getSongs():
     table = soup.find_all('tbody')[0]
     for row in table.find_all("tr")[1:-1]:
         rank = row.find('th').text
+        streams = row.find_all('td')[1].text
         song = row.find_all('td')[0].text
         artist = row.find_all('td')[2].text
-        topSongs.append((int(rank), song, artist))
+        topSongs.append((int(rank), float(streams), song, artist))
 
-    return topSongs
+    print(topSongs)
 
 
 def setUpSongsTable(data, cur, conn):
 
     '''Funtion to create the WikiSongsData Table with the songs pulled from the list of tuples and sorts the data into columns.'''
 
-    cur.execute("CREATE TABLE IF NOT EXISTS WikiSongsData (Song_Rank INTEGER, Song_Name TEXT, Artist_Name TEXT)")
+    cur.execute("CREATE TABLE IF NOT EXISTS WikiSongsData (Song_Rank INTEGER, Song_Streams FLOAT, Song_Name TEXT, Artist_Name TEXT)")
     cur.execute("SELECT * FROM WikiSongsData")
     num = len(cur.fetchall())
     count = 0
@@ -55,7 +56,7 @@ def setUpSongsTable(data, cur, conn):
         if count == 25:
             break
         if cur.execute("SELECT Song_Name FROM WikiSongsData WHERE Song_Name = ?", (elem[1],)).fetchone() == None:#Not properly checking if item in DB
-            cur.execute('INSERT INTO WikiSongsData (Song_Rank, Song_Name, Artist_Name) VALUES (?, ?, ?)', (elem[0], elem[1], elem[2]))
+            cur.execute('INSERT INTO WikiSongsData (Song_Rank, Song_Streams, Song_Name, Artist_Name) VALUES (?, ?, ?, ?)', (elem[0], elem[1], elem[2], elem[3]))
             num = num + 1
             count = count + 1
     conn.commit()
