@@ -1,10 +1,13 @@
 import os
 import sqlite3
-
+import csv
 import geopandas
+from geopandas import GeoDataFrame
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import plotly.express as px
+import geopandas as gpd
 
 import warnings
 
@@ -24,55 +27,26 @@ def setUpDatabase(db_name):
     return cur, conn
 
 
-def events_visualization(cur):
-
-    location_lst = []
-    loc_lst = []
-    resultList = []
-
-    data = cur.execute("SELECT * FROM artist_info").fetchall()
-    
-    format_dict = {}
-    final_dict = {}
-
-    for item in data:
-        name = item[1]
-        locations = item[4]
-        loc = locations.split(',')[0]
-        loc = loc.replace("['",'')
-        loc_lst.append(loc)
-    for l in loc_lst:
-
-        geolocator = Nominatim(user_agent="Sofia")
-        location = geolocator.geocode(l)
-        #print(location.address)
-        #print((location.latitude, location.longitude))
+def events_visualization(cur,csvfile):
 
     
-    cities = format_dict.values()
-    world = geopandas.read_file(geopandas.datasets.get_path("naturalearth_cities"))
-    world.geometry.name
-    world.shape
-    world.head()
-    with plt.style.context(("seaborn", "ggplot")):
-        world.plot(figsize=(18,10),
-                color="white",
-                edgecolor = "grey")
+        ArtistNextEvent = pd.read_csv("ArtistNextEvent.csv")
 
-        x = location.latitude
-        y = location.longitude
-        plt.scatter(plt.scatter(x, y, s=15, color="red", alpha=0.3))
+        ArtistNextEvent.head()
+               
+
+        
+        
+        world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
+        world.plot(figsize=(18,10))
+        plt.scatter(ArtistNextEvent.Longitude, ArtistNextEvent.Latitude, s=15, color="red", alpha=0.7)
         plt.xlabel("Longitude")
         plt.ylabel("Latitude")
-        plt.title("Concert Locations from the Top 100 Artists Currently")
-        
-    
-        geo_data = cities.groupby("City").mean()
-        cnts = cities.groupby("City").count()[["City"]].rename(columns={"City":"Count"})
-        cnts = geo_data.join(cnts).sort_values(by=["Count"], ascending=False)
-        cnts = cnts[cnts["Count"]>10]
-        cnts.head()
+        plt.title("Concert Locations from the Current Top 25 Artists")
         plt.show()
+
+ 
+
 
 
 
@@ -87,7 +61,8 @@ def main():
 
     '''Calling all visualization functions.'''
     
-    events_visualization(cur)
+    csvfile = "ArtistNextEvent.csv"
+    events_visualization(cur,csvfile)
 
 
     cur.close()
