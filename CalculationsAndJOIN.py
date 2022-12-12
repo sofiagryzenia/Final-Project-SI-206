@@ -2,6 +2,8 @@
 import sqlite3
 import os
 import csv
+from  geopy.geocoders import Nominatim
+geolocator = Nominatim(user_agent="Sofia")
 
 
 '''––––––––––––––––––––––––––––––––––––––––––––––––––––––––––– DB: Function to set up a database –––––––––––––––––––––––––––––––––––––––––––––––––––––––––––––'''
@@ -41,6 +43,7 @@ def calcONE(cur, conn, filepath):
     state_and_county_lst = []
     for tup in data: 
         loc_lst.append(tup[3])
+  
             
     for location in loc_lst:
         city = location.split(',')[0]
@@ -52,16 +55,25 @@ def calcONE(cur, conn, filepath):
         final_state_country = state_or_country_final.replace("'","")
         state_and_county_lst.append(final_state_country)
 
-
+    
+    lat_lst = []
+    lon_lst = []
+    for city in city_lst:
+        geolocator = Nominatim(user_agent="Sofia")
+        location = geolocator.geocode(city)
+        y = location.longitude
+        x =  location.latitude
+        lat_lst.append(y)
+        lon_lst.append(x)
+            
 
     with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
         f = csv.writer(f, delimiter = ',')
-        f.writerow(['Artist Ranking', 'Aritst Name', 'Upcoming Event Count','Next Event City','Next Event State or Country'])
-        count = 0
+        f.writerow(['Artist Ranking', 'Aritst Name', 'Upcoming Event Count','Next Event City','Next Event State or Country', 'Latitude', 'Longitude'])
+
         
-        for i in popularity_lst:
-            write = (popularity_lst[count], artist_lst[count], upcoming_events_count_lst[count],city_lst[count],state_and_county_lst[count])
-            count += 1
+        for index in range(len(popularity_lst)):
+            write = (popularity_lst[index], artist_lst[index], upcoming_events_count_lst[index],city_lst[index],state_and_county_lst[index],lon_lst[index],lat_lst[index])
             f.writerow(write)
     
 
