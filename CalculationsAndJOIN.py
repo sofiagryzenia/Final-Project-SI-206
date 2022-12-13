@@ -150,6 +150,13 @@ def calcTHREE(cur, conn, filepath):
             f.writerow(write)
     
 
+def joinData(cur, conn):
+    cur.execute("SELECT Quality_of_Life, Average_Annual_Salary, Population FROM CitiesData JOIN RestaurantCities ON trim(CitiesData.City_Name) = trim(RestaurantCities.Cities)")
+    joined = cur.fetchall()
+    for x in joined: 
+        print(x)
+    conn.commit()
+
 
 def main():
    
@@ -162,7 +169,8 @@ def main():
 
     calcTHREE(cur, conn, "TotalTopStreams.csv")
 
-
+    '''Calling the JOIN statement function.'''
+    joinData(cur, conn)
 
     cur.close()
 
