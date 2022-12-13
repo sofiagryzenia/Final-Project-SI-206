@@ -95,6 +95,8 @@ def billions(cur, csvfile):
     plt.xlabel('Artist')
     plt.ylabel('Number of Streams (in billions)')
 
+    plt.xticks(rotation=50,fontsize=7,weight='bold')
+
     
     plt.show()
 
