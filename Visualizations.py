@@ -22,8 +22,6 @@ def events_visualization(cur,csvfile):
 
         ArtistNextEvent.head()
                
-
-        
         
         world = gpd.read_file(gpd.datasets.get_path('naturalearth_lowres'))
         world.plot(figsize=(18,10))
@@ -34,7 +32,27 @@ def events_visualization(cur,csvfile):
         plt.show()
 
  
+def streams_visualzation(cur,csvfile):
+    
+    data = pd.read_csv("TotalTopStreams.csv")
+    
+    df = pd.DataFrame(data)
 
+    X = list(df.iloc[:, 0])
+
+    Y = list(df.iloc[:, 1])
+
+    plt.bar(X, Y, color='midnightblue')
+    plt.title("Total Streams for Top 25 Artists")
+    plt.xlabel("Artist Name")
+    plt.ylabel("Number of Streams in Billions")
+   
+    plt.xticks(rotation=50,fontsize=4)
+    
+    
+    plt.show()
+
+    
 
 
 
@@ -52,7 +70,8 @@ def main():
     csvfile = "ArtistNextEvent.csv"
     events_visualization(cur,csvfile)
 
-
+    csvfile = "TotalTopStreams.csv"
+    streams_visualzation(cur,csvfile)
     cur.close()
 
 
