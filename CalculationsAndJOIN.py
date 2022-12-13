@@ -25,6 +25,7 @@ def calcONE(cur, conn, filepath):
     data = cur.fetchall()
     conn.commit()
 
+
     popularity_lst = []
     for tup in data: 
         popularity_lst.append(tup[0])
@@ -76,15 +77,14 @@ def calcONE(cur, conn, filepath):
             f.writerow(write)
     
 
-
+'''
 
 def calcTWO(cur, conn, filepath):
     
-    cur.execute('SELECT WikiSongsData.Song_Streams, WikiSongsData.Song_Name, WikiSongsData.Artist_Name FROM WikiSongsData')
-    data = cur.fetchall()
-    print(data)
-    conn.commit()
+    data = cur.execute('SELECT Song_Streams, Song_Name, Artist_Name FROM WikiSongsData').fetchall()
 
+    conn.commit()
+    print(data)
     streams_lst = []
     for tup in data: 
         streams_lst.append(tup[0])
@@ -102,16 +102,16 @@ def calcTWO(cur, conn, filepath):
     #conn.commit()
 
     
-
+'''
 
 
 def calcTHREE(cur, conn, filepath):
     
-    cur.execute('SELECT WikiSongsData.Song_Streams, WikiSongsData.Song_Name, WikiSongsData.Artist_Name FROM WikiSongsData')
-    
-    data = cur.fetchall()
+    data = cur.execute('SELECT WikiSongsData.Song_Streams, WikiSongsData.Song_Name, WikiSongsData.Artist_Name FROM WikiSongsData').fetchall()
+
     conn.commit()
-    print(data)
+
+    #print(data)
     streams_lst = []
     for tup in data: 
         streams_lst.append(tup[0])
@@ -127,15 +127,28 @@ def calcTHREE(cur, conn, filepath):
     
     artist_streams_dict = {}
 
-    for artist in artists_lst:
+    for i in range(len(artists_lst)):
 
-        for stream in streams_lst:
-            if artist not in artist_streams_dict:
-                artist_streams_dict[artist] = stream
-            else:
-                artist_streams_dict[artist] += stream
+        if artists_lst[i] not in artist_streams_dict:
+            artist_streams_dict[artists_lst[i]] = streams_lst[i]
+        else:
+            artist_streams_dict[artists_lst[i]] += streams_lst[i]
 
+    sorted_streams = sorted(artist_streams_dict.items(), key=lambda x:x[1],reverse=True)
+    #print(len(sorted_streams))
+    #sorted_final = {}
+    #for value in sorted_streams:
+        #new_val = round(value[1],2)
 
+    with open(filepath, 'w', newline = '', encoding= 'utf-8') as f: 
+        f = csv.writer(f, delimiter = ',')
+        f.writerow(['Artist Name','Streams'])
+
+        
+        for index in range(len(sorted_streams)):
+            write = (sorted_streams[index])
+            f.writerow(write)
+    
 
 
 def main():
@@ -145,7 +158,7 @@ def main():
 
     calcONE(cur, conn, "ArtistNextEvent.csv")
 
-    calcTWO(cur, conn, "SongPopularity.csv")
+    #calcTWO(cur, conn, "SongPopularity.csv")
 
     calcTHREE(cur, conn, "TotalTopStreams.csv")
 
