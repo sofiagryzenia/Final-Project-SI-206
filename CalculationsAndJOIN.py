@@ -158,7 +158,7 @@ def main():
 
     calcONE(cur, conn, "ArtistNextEvent.csv")
 
-    #calcTWO(cur, conn, "SongPopularity.csv")
+    calcTWO(cur, conn, "SongPopularity.csv")
 
     calcTHREE(cur, conn, "TotalTopStreams.csv")
 
