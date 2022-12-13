@@ -12,7 +12,6 @@ import matplotlib.pyplot as plt
 def spotify():
     cid = "3641e3928ecd4cf48421e3cf84cd31dc"
     secret = "b16fb2fa6c7143daa22a8fc1c8c918f2"
-
     
     os.environ['SPOTIPY_CLIENT_ID']= cid
     os.environ['SPOTIPY_CLIENT_SECRET']= secret
@@ -29,7 +28,7 @@ def spotify():
 
     results = sp.current_user_top_tracks(limit = 100, offset = 0, time_range = 'medium_term' )
     items = results["items"]
-    #print(len(items))
+    print(len(items))
     popularity = []
     names = []
     artists = []
@@ -40,19 +39,20 @@ def spotify():
         artists.append(item['artists'][0]['name'])
 
 
+
     
 
-        for key in item:
-            print (key, item[key])
+        #for key in item:
+            #print (key, item[key])
 
 
        # print (item, results[item])
-            print("==================================================================")
+            #print("==================================================================")
 
 
-    print (popularity)
-    print (names)
-    print (artists)
+    #print (popularity)
+    #print (names)
+    #print (artists)
     return popularity,names,artists
 
   
@@ -95,7 +95,7 @@ def spotify():
 
 
 
-def open_database(db_name):
+'''def open_database(db_name):
     path = os.path.dirname(os.path.abspath(__file__))
     conn = sqlite3.connect(path+'/'+db_name)
     cur = conn.cursor()
@@ -106,8 +106,48 @@ def setUpSongsTable(cur, conn,l1,l2,l3):
     cur.execute("CREATE TABLE IF NOT EXISTS SpotifySongData (Popularity, Song_Name, artist)")
     cur.execute("SELECT * FROM SpotifySongData")
     for i in range(0,25):
+        cur.execute('INSERT OR IGNORE INTO SpotifySongData (Popularity, Song_name, artist) VALUES (?, ?, ?)', (l1[i], l2[i], l3[i]))
+   
+
+    conn.commit() '''
+
+def open_database(db_name):
+    path = os.path.dirname(os.path.abspath(__file__))
+    conn = sqlite3.connect(path+'/'+db_name)
+    cur = conn.cursor()
+    return cur, conn
+
+
+def setUpSongsTable(cur, conn, l1, l2, l3):
+    cur.execute("CREATE TABLE IF NOT EXISTS SpotifySongData (Popularity, Song_Name, artist)")
+
+    # Check how many items are currently in the table
+    cur.execute('SELECT COUNT(*) FROM SpotifySongData')
+    count = cur.fetchone()[0]
+
+    # Use a for loop to insert the next 25 items from each list into the database
+    for i in range(count, count + 25):
+        if i >= len(l1):
+            break
+
+        # Check if the current value of i exists in the table
+        cur.execute('SELECT * FROM SpotifySongData WHERE Popularity=? AND Song_name=? AND artist=?', (l1[i], l2[i], l3[i]))
+        if cur.fetchone():
+            continue
+
+        # Insert the current value of i into the table
         cur.execute('INSERT INTO SpotifySongData (Popularity, Song_name, artist) VALUES (?, ?, ?)', (l1[i], l2[i], l3[i]))
+        
+
     conn.commit()
+
+
+
+
+
+
+
+
 
 
 
@@ -120,9 +160,10 @@ def main():
     
     dir_path = os.path.dirname(os.path.realpath(__file__))
     
-    cur, conn = open_database('finalprojDB.db')
+    cur, conn = open_database('final.db')
     l1,l2,l3 = spotify()
     setUpSongsTable(cur,conn,l1,l2,l3)
+   
 
     
     
