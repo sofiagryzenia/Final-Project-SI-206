@@ -74,6 +74,40 @@ def num_concerts_visualzation(cur,csvfile):
     
     plt.show()
 
+
+def billions(csvfile):
+   
+    data = pd.read_csv("SongPopularity.csv")
+
+    
+    artists = []
+    num_streams = []
+
+    
+    for i in range(data.shape[0]):
+        artist = data.iloc[i, 0]
+        streams = data.iloc[i, 1]
+        artists.append(artist)
+        num_streams.append(int(streams))
+
+    
+    plt.bar(artists, num_streams, color='blue')
+    plt.xlabel('Artist')
+    plt.ylabel('Number of Streams (in billions)')
+
+    
+    plt.show()
+
+
+
+
+
+
+
+
+
+
+
     
 
 
