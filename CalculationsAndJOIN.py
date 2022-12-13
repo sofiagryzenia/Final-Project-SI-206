@@ -77,33 +77,33 @@ def calcONE(cur, conn, filepath):
             f.writerow(write)
     
 
-'''
-
 def calcTWO(cur, conn, filepath):
-    
+
+    # Fetch the data from the database
     data = cur.execute('SELECT Song_Streams, Song_Name, Artist_Name FROM WikiSongsData').fetchall()
-
     conn.commit()
-    print(data)
-    streams_lst = []
-    for tup in data: 
-        streams_lst.append(tup[0])
+    # Create an empty dictionary to store the artist stream data
+    artist_streams = {}
 
-    songs_lst = []
-    for tup in data: 
-        songs_lst.append(tup[1])
-    
-    artists_lst = []
-    for tup in data: 
-        artists_lst.append(tup[2])
-    
-    #cur.execute('SELECT SpotifySongData.Popularity, SpotifySongData.Song_name, SpotifySongData.Artist FROM SpotifySongData')
-    #data = cur.fetchall()
-    #conn.commit()
+    # Loop through the data and add the corresponding number of streams for each song to the appropriate artist's entry in the dictionary
+    for row in data:
+        streams, song, artist = row
+        if artist not in artist_streams:
+            artist_streams[artist] = 0
+        artist_streams[artist] += streams
 
-    
-'''
+    # Open the CSV file for writing
+    with open(filepath, 'w', newline='') as csvfile:
+        writer = csv.writer(csvfile)
 
+        # Write the header row
+        writer.writerow(['Artist', 'Number of Streams (in billions)'])
+
+        # Loop through the dictionary and write each artist's data to the CSV file
+        for artist, streams in artist_streams.items():
+            # Convert the number of streams from millions to billions
+            num_streams_in_billions = streams / 1000000000
+            writer.writerow([artist, num_streams_in_billions])
 
 def calcTHREE(cur, conn, filepath):
     
