@@ -79,40 +79,23 @@ def billions(cur, csvfile):
    
     data = pd.read_csv("SongPopularity.csv")
 
-    
-    artists = []
-    num_streams = []
+    df = pd.DataFrame(data)
+ 
 
-    
-    for i in range(data.shape[0]):
-        artist = data.iloc[i, 0]
-        streams = data.iloc[i, 1]
-        artists.append(artist)
-        num_streams.append(int(streams))
+    X = list(df.iloc[:, 0])
+    Y = list(df.iloc[:, 1])
 
+
+    plt.title("Number of Streams per Top 22 Artists",weight='bold')
     
-    plt.bar(artists, num_streams, color='blue')
+    plt.bar(X, Y, color='blue')
     plt.xlabel('Artist')
     plt.ylabel('Number of Streams (in billions)')
 
-    plt.xticks(rotation=50,fontsize=7,weight='bold')
+    plt.xticks(rotation=55,fontsize=3.5,weight='bold')
 
     
     plt.show()
-
-
-
-
-
-
-
-
-
-
-
-    
-
-
 
 
 
