@@ -75,6 +75,7 @@ def num_concerts_visualzation(cur,csvfile):
     plt.show()
 
 
+'''
 def billions(cur, csvfile):
    
     data = pd.read_csv("SongPopularity.csv")
@@ -97,7 +98,7 @@ def billions(cur, csvfile):
     
     plt.show()
 
-
+'''
 
 
 
@@ -118,8 +119,8 @@ def main():
     csvfile = "ArtistNextEvent.csv"
     num_concerts_visualzation(cur,csvfile)
 
-    csvfile = "SongPopularity.csv"
-    billions(cur,csvfile)
+    #csvfile = "SongPopularity.csv"
+    #billions(cur,csvfile)
 
 if __name__ == "__main__":
     main()
