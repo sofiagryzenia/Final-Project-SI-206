@@ -47,7 +47,29 @@ def streams_visualzation(cur,csvfile):
     plt.xlabel("Artist Name")
     plt.ylabel("Number of Streams in Billions")
    
-    plt.xticks(rotation=50,fontsize=4)
+    plt.xticks(rotation=50,fontsize=4,weight='bold')
+    
+    
+    plt.show()
+
+def num_concerts_visualzation(cur,csvfile):
+    
+    data = pd.read_csv("ArtistNextEvent.csv")
+
+    data.head()
+    
+    df = pd.DataFrame(data)
+    X = list(df.iloc[:, 1])
+    Y = list(df.iloc[:, 2])
+
+
+
+    plt.bar(X, Y, color='purple')
+    plt.title("Num of Concerts For Top 18 Artists From 2022-12-13,2023-12-9",weight='bold')
+    plt.xlabel("Artist Name")
+    plt.ylabel("Num of Concerts in the next year")
+   
+    plt.xticks(rotation=50,fontsize=7,weight='bold')
     
     
     plt.show()
@@ -73,7 +95,9 @@ def main():
     csvfile = "TotalTopStreams.csv"
     streams_visualzation(cur,csvfile)
     cur.close()
-
+    
+    csvfile = "ArtistNextEvent.csv"
+    num_concerts_visualzation(cur,csvfile)
 
 if __name__ == "__main__":
     main()
